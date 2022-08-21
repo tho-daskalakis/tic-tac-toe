@@ -1,3 +1,7 @@
+// Get DOM elements
+
+const boardDivs = [...document.querySelectorAll('.board>div')];
+
 /**
  * Board module
  */
@@ -8,47 +12,82 @@ const board = (function() {
      * @type {Array}
      */
     boardArray = [
-        ['*', '*', '*'],
-        ['*', '*', '*'],
-        ['*', '*', '*']
+        '1', '2', '*',
+        '*', '*', '*',
+        '*', '8', '9'
     ];
 
-    /**
-     * Prinst the board to the console
-     */
-    const printBoard = function() {
-        console.table(boardArray);
-    };
+    const getBoard = () => {
+        return this.boardArray;
+    }
+
+    const setBoard = (index, value) => {
+        boardArray[index] = value;
+        controller.updateDisplay();
+    }
     
     return {
-        printBoard
+        getBoard,
+        setBoard,
     };
 })();
-
-board.printBoard(); // To be deleted
 
 /**
  * Controller module
  */
 const controller = (function() {
+
+    let turnNum = 1;
+
+    const nextValue = 'Value';
+
     const init = () => {
         // Initialize game
+        
+        for (let i = 0; i < 9; i++) {
+            board.setBoard(i, '');
+        }
+        
+        updateDisplay();
+
+        // Add click events
+        boardDivs.forEach(div => div.addEventListener('click', (e) => {
+            const index = boardDivs.indexOf(e.target);
+            board.setBoard(index, nextValue);
+        }, {'once': true}));
     };
 
-    const nextTurn = () => {
+    const updateDisplay = () => {
+        for (let i = 0; i < 9; i++) {
+            boardDivs[i].querySelector('p').textContent = 
+            board.getBoard()[i];
+        }
+    }
 
+    const nextTurn = () => {
+        turnNum++;
     };
 
     return {
-
+        init,
+        updateDisplay,
     };
 })();
 
 /**
  * Player factory
  */
-const Player = function(name) {
+const Player = function(name, mark) {
+    
+    const getName = () => name;
+
+    const getMark = () => mark;
+
     return {
-        name,
+        getName,
+        getMark,
     };
 }
+
+// Run commands
+controller.init();
