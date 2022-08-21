@@ -2,6 +2,8 @@
 
 const boardDivs = [...document.querySelectorAll('.board>div')];
 
+// Game logic
+
 /**
  * Board module
  */
@@ -22,7 +24,9 @@ const board = (function() {
     }
 
     const setBoard = (index, value) => {
+
         boardArray[index] = value;
+
         controller.updateDisplay();
     }
     
@@ -37,9 +41,9 @@ const board = (function() {
  */
 const controller = (function() {
 
-    let turnNum = 1;
+    let currentPlayer = 0;
 
-    const nextValue = 'Value';
+    let turnNum = 1;
 
     const init = () => {
         // Initialize game
@@ -52,20 +56,31 @@ const controller = (function() {
 
         // Add click events
         boardDivs.forEach(div => div.addEventListener('click', (e) => {
+            
             const index = boardDivs.indexOf(e.target);
-            board.setBoard(index, nextValue);
+            
+            board.setBoard(index, players[currentPlayer].getMark());
+            
+            nextTurn();
+
         }, {'once': true}));
     };
 
     const updateDisplay = () => {
+        
         for (let i = 0; i < 9; i++) {
+            
             boardDivs[i].querySelector('p').textContent = 
+            
             board.getBoard()[i];
         }
     }
 
     const nextTurn = () => {
+        
         turnNum++;
+        
+        currentPlayer = (currentPlayer + 1) % 2;
     };
 
     return {
@@ -90,4 +105,6 @@ const Player = function(name, mark) {
 }
 
 // Run commands
+let players = [Player('Player 1', 'X'), Player('Player 2', 'O')];
+
 controller.init();
