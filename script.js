@@ -83,11 +83,15 @@ const controller = (function() {
         if (gameEnd.isTie()) {
             console.log('Game is a tie');
         }
-        
+
         turnNum++;
-        
+
         currentPlayer = (currentPlayer + 1) % 2;
     };
+
+    const getTurnNum = () => {
+        return turnNum;
+    }
 
     const getCurrentPlayer = () => {
         return currentPlayer;
@@ -97,6 +101,7 @@ const controller = (function() {
         init,
         updateDisplay,
         getCurrentPlayer,
+        getTurnNum,
     };
 })();
 
@@ -140,7 +145,14 @@ const gameEnd = (function() {
     };
 
     const isTie = () => {
+        const turn = controller.getTurnNum();
 
+        if (turn < 9) {
+            return false;
+        }
+        else {
+            return true;
+        }
     };
 
     return {
