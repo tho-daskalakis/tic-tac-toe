@@ -2,6 +2,10 @@
 
 const boardDivs = [...document.querySelectorAll(".board>div")];
 
+const display = document.querySelector(".info-display");
+
+const restartBtn = document.querySelector(".container .restart-btn button");
+
 // Game logic
 
 /**
@@ -41,9 +45,21 @@ const controller = (function () {
   const init = () => {
     // Initialize game
 
+    currentPlayer = 0;
+    turnNum = 1;
+
+    gameEnd.initIndexes();
+
     for (let i = 0; i < 9; i++) {
       board.setBoard(i, "");
     }
+
+    boardDivs.forEach((div) => (div.style.backgroundColor = "white"));
+    boardDivs.forEach((div) => (div.style.color = "black"));
+
+    display.textContent = `Now playing: ${players[
+      currentPlayer
+    ].getName()}, ${players[currentPlayer].getMark()}`;
 
     updateDisplay();
 
@@ -79,15 +95,27 @@ const controller = (function () {
         boardDivs[index].style.backgroundColor = "teal";
         boardDivs[index].style.color = "yellow";
       });
+
+      display.textContent = `${players[currentPlayer].getName()}, ${players[
+        currentPlayer
+      ].getMark()} wins!`;
+
+      return;
     }
 
     if (gameEnd.isTie()) {
-      console.log("Game is a tie");
+      display.textContent = "The game is a tie.";
+
+      return;
     }
 
     turnNum++;
 
     currentPlayer = (currentPlayer + 1) % 2;
+
+    display.textContent = `Now playing: ${players[
+      currentPlayer
+    ].getName()}, ${players[currentPlayer].getMark()}`;
   };
 
   const getTurnNum = () => {
@@ -179,10 +207,15 @@ const gameEnd = (function () {
     return winIndexes;
   };
 
+  const initIndexes = () => {
+    winIndexes = [];
+  };
+
   return {
     isWin,
     isTie,
     getWinIndexes,
+    initIndexes,
   };
 })();
 
@@ -201,6 +234,8 @@ const Player = function (name, mark) {
 };
 
 // Run commands
+restartBtn.addEventListener("click", controller.init);
+
 let players = [Player("Player 1", "X"), Player("Player 2", "O")];
 
 controller.init();

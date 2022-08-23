@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -8,8 +9,39 @@ html, body {
 .container {
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.info-display {
+  font-size: 30px;
+  font-weight: 550;
+}
+
+.restart-btn {
+  width: 60px;
+  height: auto;
+  margin: 2%;
+}
+.restart-btn button {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+  background-color: coral;
+  box-shadow: 0 5px 5px gray;
+}
+.restart-btn button:active {
+  box-shadow: none;
+}
+.restart-btn button img {
+  width: 100%;
+  height: 100%;
+  filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(30deg) brightness(101%) contrast(104%);
+}
+.restart-btn button img:hover {
+  filter: invert(83%) sepia(100%) saturate(4067%) hue-rotate(360deg) brightness(113%) contrast(106%);
 }
 
 .board {
