@@ -49,18 +49,16 @@ const controller = (function () {
 
     // Add click events
     boardDivs.forEach((div) =>
-      div.addEventListener(
-        "click",
-        (e) => {
-          const index = boardDivs.indexOf(e.target);
-
-          board.setBoard(index, players[currentPlayer].getMark());
-
-          nextTurn();
-        },
-        { once: true }
-      )
+      div.addEventListener("click", onMouseClick, { once: true })
     );
+  };
+
+  const onMouseClick = (e) => {
+    const index = boardDivs.indexOf(e.target);
+
+    board.setBoard(index, players[currentPlayer].getMark());
+
+    nextTurn();
   };
 
   const updateDisplay = () => {
@@ -73,7 +71,14 @@ const controller = (function () {
     let winner = gameEnd.isWin();
 
     if (winner !== undefined) {
-      console.log("Winner is " + players[winner].getName());
+      boardDivs.forEach((div) =>
+        div.removeEventListener("click", onMouseClick)
+      );
+
+      gameEnd.getWinIndexes().forEach((index) => {
+        boardDivs[index].style.backgroundColor = "teal";
+        boardDivs[index].style.color = "yellow";
+      });
     }
 
     if (gameEnd.isTie()) {
@@ -102,6 +107,8 @@ const controller = (function () {
 })();
 
 const gameEnd = (function () {
+  let winIndexes = [];
+
   const isWin = () => {
     const currentBoard = board.getBoard();
 
@@ -112,6 +119,9 @@ const gameEnd = (function () {
         currentBoard[3 * i] === currentBoard[3 * i + 1] &&
         currentBoard[3 * i + 1] === currentBoard[3 * i + 2]
       ) {
+        winIndexes.push(3 * i);
+        winIndexes.push(3 * i + 1);
+        winIndexes.push(3 * i + 2);
         return controller.getCurrentPlayer();
       }
     }
@@ -123,6 +133,9 @@ const gameEnd = (function () {
         currentBoard[i] === currentBoard[i + 3] &&
         currentBoard[i + 3] === currentBoard[i + 6]
       ) {
+        winIndexes.push(i);
+        winIndexes.push(i + 3);
+        winIndexes.push(i + 6);
         return controller.getCurrentPlayer();
       }
     }
@@ -133,6 +146,9 @@ const gameEnd = (function () {
       currentBoard[0] === currentBoard[4] &&
       currentBoard[4] === currentBoard[8]
     ) {
+      winIndexes.push(0);
+      winIndexes.push(4);
+      winIndexes.push(8);
       return controller.getCurrentPlayer();
     }
 
@@ -142,6 +158,9 @@ const gameEnd = (function () {
       currentBoard[2] === currentBoard[4] &&
       currentBoard[4] === currentBoard[6]
     ) {
+      winIndexes.push(2);
+      winIndexes.push(4);
+      winIndexes.push(6);
       return controller.getCurrentPlayer();
     }
   };
@@ -156,9 +175,14 @@ const gameEnd = (function () {
     }
   };
 
+  const getWinIndexes = () => {
+    return winIndexes;
+  };
+
   return {
     isWin,
     isTie,
+    getWinIndexes,
   };
 })();
 
